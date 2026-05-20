@@ -1,0 +1,16 @@
+# Claude Code agent worktrees
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Data volume (local dev)
+data/
+
+# OS
+.DS_Store
