@@ -22,7 +22,7 @@ def clients_list(request: Request, db: Session = Depends(get_db)):
 def client_new(request: Request):
     return templates.TemplateResponse(
         "client_form.html",
-        {"request": request, "client": None},
+        {"request": request, "client": None, "action_url": "/clients"},
     )
 
 
@@ -53,7 +53,7 @@ def client_edit(client_id: int, request: Request, db: Session = Depends(get_db))
         raise HTTPException(status_code=404, detail="Client not found")
     return templates.TemplateResponse(
         "client_form.html",
-        {"request": request, "client": client},
+        {"request": request, "client": client, "action_url": f"/clients/{client_id}"},
     )
 
 

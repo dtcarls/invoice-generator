@@ -15,7 +15,6 @@ class SettingsUpdate(BaseModel):
     email: Optional[str] = None
     phone: Optional[str] = None
     website: Optional[str] = None
-    tax_id: Optional[str] = None
     logo_path: Optional[str] = None
     default_payment_terms: Optional[str] = None
     default_due_days: Optional[int] = None

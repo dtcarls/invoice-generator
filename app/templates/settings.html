@@ -15,46 +15,40 @@
 
   <h3>Business Information</h3>
 
-  <div class="grid">
-    <label>
-      Business Name
-      <input type="text" name="name" value="{{ settings.name if settings else '' }}" placeholder="Your Business Name">
-    </label>
-    <label>
-      Tax ID / VAT Number
-      <input type="text" name="tax_id" value="{{ settings.tax_id if settings else '' }}" placeholder="Optional">
-    </label>
-  </div>
+  <label>
+    Business Name
+    <input type="text" name="business_name" value="{{ (settings.business_name or '') if settings else '' }}" placeholder="Your Business Name">
+  </label>
 
   <label>
     Address Line 1
-    <input type="text" name="address_line1" value="{{ settings.address_line1 if settings else '' }}" placeholder="Street address">
+    <input type="text" name="address_line1" value="{{ (settings.address_line1 or '') if settings else '' }}" placeholder="Street address">
   </label>
 
   <label>
     Address Line 2
-    <input type="text" name="address_line2" value="{{ settings.address_line2 if settings else '' }}" placeholder="Suite, floor...">
+    <input type="text" name="address_line2" value="{{ (settings.address_line2 or '') if settings else '' }}" placeholder="Suite, floor...">
   </label>
 
   <div class="grid">
     <label>
       City
-      <input type="text" name="city" value="{{ settings.city if settings else '' }}">
+      <input type="text" name="city" value="{{ (settings.city or '') if settings else '' }}">
     </label>
     <label>
       State / Region
-      <input type="text" name="region" value="{{ settings.region if settings else '' }}">
+      <input type="text" name="region" value="{{ (settings.region or '') if settings else '' }}">
     </label>
     <label>
       Postal Code
-      <input type="text" name="postal_code" value="{{ settings.postal_code if settings else '' }}">
+      <input type="text" name="postal_code" value="{{ (settings.postal_code or '') if settings else '' }}">
     </label>
   </div>
 
   <div class="grid">
     <label>
       Country
-      <input type="text" name="country" value="{{ settings.country if settings else '' }}">
+      <input type="text" name="country" value="{{ (settings.country or '') if settings else '' }}">
     </label>
     <label>
       &nbsp;
@@ -66,17 +60,17 @@
   <div class="grid">
     <label>
       Email
-      <input type="email" name="email" value="{{ settings.email if settings else '' }}" placeholder="you@yourbusiness.com">
+      <input type="email" name="email" value="{{ (settings.email or '') if settings else '' }}" placeholder="you@yourbusiness.com">
     </label>
     <label>
       Phone
-      <input type="text" name="phone" value="{{ settings.phone if settings else '' }}" placeholder="+1 555 000 0000">
+      <input type="text" name="phone" value="{{ (settings.phone or '') if settings else '' }}" placeholder="+1 555 000 0000">
     </label>
   </div>
 
   <label>
     Website
-    <input type="url" name="website" value="{{ settings.website if settings else '' }}" placeholder="https://yourbusiness.com">
+    <input type="url" name="website" value="{{ (settings.website or '') if settings else '' }}" placeholder="https://yourbusiness.com">
   </label>
 
   <h3>Logo</h3>
@@ -102,27 +96,23 @@
 
   <div class="grid">
     <label>
-      Default Currency
-      <input type="text" name="default_currency" value="{{ settings.default_currency if settings else 'USD' }}" maxlength="10" placeholder="USD">
-    </label>
-    <label>
       Default Due Days
-      <input type="number" name="default_due_days" value="{{ settings.default_due_days if settings else 30 }}" min="0" placeholder="30">
+      <input type="number" name="default_due_days" value="{{ (settings.default_due_days if settings.default_due_days is not none else 30) if settings else 30 }}" min="0" placeholder="30">
     </label>
     <label>
       Default Payment Terms
-      <input type="text" name="default_payment_terms" value="{{ settings.default_payment_terms if settings else '' }}" placeholder="e.g. Net 30">
+      <input type="text" name="default_payment_terms" value="{{ (settings.default_payment_terms or '') if settings else '' }}" placeholder="e.g. Net 30">
     </label>
   </div>
 
   <label>
     Default Payment Instructions
-    <textarea name="payment_instructions" rows="4" placeholder="e.g. Please transfer to Bank Account IBAN: ... Reference: Invoice number">{{ settings.payment_instructions if settings else '' }}</textarea>
+    <textarea name="payment_instructions" rows="4" placeholder="e.g. Please transfer to Bank Account IBAN: ... Reference: Invoice number">{{ (settings.payment_instructions or '') if settings else '' }}</textarea>
   </label>
 
   <label>
     Default Footer Notes
-    <textarea name="default_footer_notes" rows="3" placeholder="e.g. Thank you for your business!">{{ settings.default_footer_notes if settings else '' }}</textarea>
+    <textarea name="default_footer_notes" rows="3" placeholder="e.g. Thank you for your business!">{{ (settings.default_footer_notes or '') if settings else '' }}</textarea>
   </label>
 
   <div style="margin-top: 1.5rem;">

@@ -42,7 +42,6 @@ BUSINESS = {
     "email": "billing@acme.com",
     "phone": "555-1234",
     "website": "",
-    "tax_id": "",
     "logo_path": None,
     "payment_instructions": "Pay via ACH",
     "default_footer_notes": "Thank you!",

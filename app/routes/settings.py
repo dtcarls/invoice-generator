@@ -65,11 +65,9 @@ async def settings_update(
     settings.email = form.get("email") or None
     settings.phone = form.get("phone") or None
     settings.website = form.get("website") or None
-    settings.tax_id = form.get("tax_id") or None
     settings.default_payment_terms = form.get("default_payment_terms") or None
     due_days_str = form.get("default_due_days")
     settings.default_due_days = int(due_days_str) if due_days_str and due_days_str.strip() else None
-    settings.default_currency = form.get("default_currency") or None
     settings.payment_instructions = form.get("payment_instructions") or None
     settings.default_footer_notes = form.get("default_footer_notes") or None
 

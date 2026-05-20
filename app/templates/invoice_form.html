@@ -6,21 +6,15 @@
 <h1>New Invoice</h1>
 
 <form method="post" action="/invoices">
-  <div class="grid">
-    <label>
-      Client <span style="color: red;">*</span>
-      <select name="client_id" required>
-        <option value="">— Select client —</option>
-        {% for client in clients %}
-        <option value="{{ client.id }}">{{ client.name }}</option>
-        {% endfor %}
-      </select>
-    </label>
-    <label>
-      Currency
-      <input type="text" name="currency" value="USD" maxlength="10">
-    </label>
-  </div>
+  <label>
+    Client <span style="color: red;">*</span>
+    <select name="client_id" required>
+      <option value="">— Select client —</option>
+      {% for client in clients %}
+      <option value="{{ client.id }}">{{ client.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
 
   <div class="grid">
     <label>

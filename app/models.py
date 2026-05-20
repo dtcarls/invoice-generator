@@ -19,7 +19,6 @@ class Settings(Base):
     email = Column(Text)
     phone = Column(Text)
     website = Column(Text)
-    tax_id = Column(Text)
     logo_path = Column(Text)
     default_payment_terms = Column(Text)
     default_due_days = Column(Integer)

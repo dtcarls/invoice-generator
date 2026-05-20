@@ -236,7 +236,6 @@
         {% if business.get('email') %}{{ business.email }}<br>{% endif %}
         {% if business.get('phone') %}{{ business.phone }}<br>{% endif %}
         {% if business.get('website') %}{{ business.website }}<br>{% endif %}
-        {% if business.get('tax_id') %}Tax ID: {{ business.tax_id }}{% endif %}
       </div>
     </div>
 
@@ -303,7 +302,7 @@
 
   <div class="total-section">
     <div class="total-label">Total Amount Paid</div>
-    <div class="total-amount">{{ invoice.currency }} {{ "%.2f" % invoice.total }}</div>
+    <div class="total-amount">{{ "%.2f" % invoice.total }}</div>
   </div>
 
   <div class="cross-reference">

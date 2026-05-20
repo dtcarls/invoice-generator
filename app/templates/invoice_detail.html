@@ -26,12 +26,8 @@
           <td>{{ invoice.due_date }}</td>
         </tr>
         <tr>
-          <th style="text-align: left; padding-left: 0;">Currency</th>
-          <td>{{ invoice.currency }}</td>
-        </tr>
-        <tr>
           <th style="text-align: left; padding-left: 0;">Total</th>
-          <td><strong>{{ invoice.currency }} {{ "%.2f" % invoice.total }}</strong></td>
+          <td><strong>{{ "%.2f" % invoice.total }}</strong></td>
         </tr>
         <tr>
           <th style="text-align: left; padding-left: 0;">Status</th>
@@ -90,7 +86,7 @@
     <tfoot>
       <tr>
         <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
-        <td style="text-align: right;"><strong>{{ invoice.currency }} {{ "%.2f" % invoice.total }}</strong></td>
+        <td style="text-align: right;"><strong>{{ "%.2f" % invoice.total }}</strong></td>
       </tr>
     </tfoot>
   </table>

@@ -48,7 +48,6 @@ def settings_to_dict(settings: Settings) -> dict:
         "email": settings.email,
         "phone": settings.phone,
         "website": settings.website,
-        "tax_id": settings.tax_id,
         "logo_path": settings.logo_path,
         "default_payment_terms": settings.default_payment_terms,
         "default_due_days": settings.default_due_days,
@@ -106,7 +105,7 @@ async def invoice_create(request: Request, db: Session = Depends(get_db)):
     client_id = int(form.get("client_id"))
     issue_date = datetime.date.fromisoformat(form.get("issue_date"))
     due_date = datetime.date.fromisoformat(form.get("due_date"))
-    currency = form.get("currency", "USD")
+    currency = "USD"
     notes = form.get("notes") or None
     payment_instructions = form.get("payment_instructions") or None
 

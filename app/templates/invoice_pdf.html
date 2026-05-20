@@ -238,7 +238,6 @@
         {% if business.get('email') %}{{ business.email }}<br>{% endif %}
         {% if business.get('phone') %}{{ business.phone }}<br>{% endif %}
         {% if business.get('website') %}{{ business.website }}<br>{% endif %}
-        {% if business.get('tax_id') %}Tax ID: {{ business.tax_id }}{% endif %}
       </div>
     </div>
 
@@ -292,8 +291,8 @@
       <tr>
         <td>{{ item.description }}</td>
         <td class="num">{{ "%.2f" % item.quantity }}</td>
-        <td class="num">{{ invoice.currency }} {{ "%.2f" % item.unit_price }}</td>
-        <td class="num">{{ invoice.currency }} {{ "%.2f" % item.line_total }}</td>
+        <td class="num">{{ "%.2f" % item.unit_price }}</td>
+        <td class="num">{{ "%.2f" % item.line_total }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -302,7 +301,7 @@
   <table class="total-table">
     <tr class="grand-total">
       <td class="total-label">Total Due</td>
-      <td class="total-value">{{ invoice.currency }} {{ "%.2f" % invoice.total }}</td>
+      <td class="total-value">{{ "%.2f" % invoice.total }}</td>
     </tr>
   </table>
 
