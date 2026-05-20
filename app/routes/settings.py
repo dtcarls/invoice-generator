@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models import Settings
-from app.main import templates
+from app.templates_config import templates
 
 DATA_DIR = os.environ.get("DATA_DIR", "/data")
 

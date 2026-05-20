@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models import Invoice, Client
-from app.main import templates
+from app.templates_config import templates
 
 router = APIRouter()
 

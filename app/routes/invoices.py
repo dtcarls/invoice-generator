@@ -12,7 +12,7 @@ from app.db import get_db
 from app.models import Invoice, InvoiceItem, Client, Settings
 from app.numbering import next_invoice_number, next_receipt_number
 from app.pdf import render_invoice_pdf, render_receipt_pdf
-from app.main import templates
+from app.templates_config import templates
 
 DATA_DIR = os.environ.get("DATA_DIR", "/data")
 

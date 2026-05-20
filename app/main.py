@@ -4,14 +4,11 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 
 from app.db import init_db
+from app.templates_config import templates  # noqa: F401 - re-exported for backward compat
 
 DATA_DIR = os.environ.get("DATA_DIR", "/data")
-
-# Module-level templates object shared across routers
-templates = Jinja2Templates(directory="app/templates")
 
 
 @asynccontextmanager
