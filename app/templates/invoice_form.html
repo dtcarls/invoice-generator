@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}New Invoice{% endblock %}
+
+{% block content %}
+<h1>New Invoice</h1>
+
+<form method="post" action="/invoices">
+  <div class="grid">
+    <label>
+      Client <span style="color: red;">*</span>
+      <select name="client_id" required>
+        <option value="">— Select client —</option>
+        {% for client in clients %}
+        <option value="{{ client.id }}">{{ client.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      Currency
+      <input type="text" name="currency" value="USD" maxlength="10">
+    </label>
+  </div>
+
+  <div class="grid">
+    <label>
+      Issue Date
+      <input type="date" name="issue_date" value="{{ today }}" required>
+    </label>
+    <label>
+      Due Date
+      <input type="date" name="due_date" value="{{ default_due_date }}" required>
+    </label>
+  </div>
+
+  <h3>Line Items</h3>
+
+  {% if service_presets %}
+  <div style="margin-bottom: 1rem;">
+    <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin: 0;">
+      Load preset:
+      <select id="preset-select" style="width: auto; margin: 0;">
+        <option value="">— Select preset —</option>
+        {% for preset in service_presets %}
+        <option value="{{ preset.id }}" data-description="{{ preset.description }}" data-price="{{ preset.unit_price }}">{{ preset.description }}</option>
+        {% endfor %}
+      </select>
+    </label>
+  </div>
+  {% endif %}
+
+  <figure>
+    <table class="line-items" id="line-items-table">
+      <thead>
+        <tr>
+          <th style="width: 45%;">Description</th>
+          <th style="width: 15%;">Qty</th>
+          <th style="width: 18%;">Unit Price</th>
+          <th style="width: 15%;">Line Total</th>
+          <th style="width: 7%;"></th>
+        </tr>
+      </thead>
+      <tbody id="line-items-body">
+        <tr class="line-item-row">
+          <td><input type="text" name="item_description[]" placeholder="Description" required></td>
+          <td><input type="number" name="item_quantity[]" step="0.01" min="0" value="1" class="qty-input" required></td>
+          <td><input type="number" name="item_unit_price[]" step="0.01" min="0" value="" placeholder="0.00" class="price-input" required></td>
+          <td><input type="text" class="line-total" readonly placeholder="0.00" tabindex="-1"></td>
+          <td><button type="button" class="remove-row outline secondary" style="padding: 0.25rem 0.5rem; margin: 0;" onclick="removeRow(this)">✕</button></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
+          <td><strong id="grand-total">0.00</strong></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </figure>
+
+  <button type="button" class="outline" onclick="addRow()">+ Add Line Item</button>
+
+  <hr>
+
+  <label>
+    Notes
+    <textarea name="notes" placeholder="Any additional notes for this invoice..." rows="3"></textarea>
+  </label>
+
+  <label>
+    Payment Instructions
+    <textarea name="payment_instructions" placeholder="Leave blank to use default from Settings" rows="3"></textarea>
+  </label>
+
+  <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+    <button type="submit">Create Invoice</button>
+    <a href="/invoices" role="button" class="secondary outline">Cancel</a>
+  </div>
+</form>
+
+<script>
+  function computeLineTotal(row) {
+    const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
+    const price = parseFloat(row.querySelector('.price-input').value) || 0;
+    const total = qty * price;
+    row.querySelector('.line-total').value = total.toFixed(2);
+    computeGrandTotal();
+  }
+
+  function computeGrandTotal() {
+    let grand = 0;
+    document.querySelectorAll('.line-total').forEach(function(el) {
+      grand += parseFloat(el.value) || 0;
+    });
+    document.getElementById('grand-total').textContent = grand.toFixed(2);
+  }
+
+  function attachRowListeners(row) {
+    row.querySelector('.qty-input').addEventListener('input', function() { computeLineTotal(row); });
+    row.querySelector('.price-input').addEventListener('input', function() { computeLineTotal(row); });
+    computeLineTotal(row);
+  }
+
+  function addRow(description, unitPrice) {
+    const tbody = document.getElementById('line-items-body');
+    const firstRow = tbody.querySelector('.line-item-row');
+    const newRow = firstRow.cloneNode(true);
+    newRow.querySelector('input[name="item_description[]"]').value = description || '';
+    newRow.querySelector('.qty-input').value = '1';
+    newRow.querySelector('.price-input').value = unitPrice !== undefined ? unitPrice : '';
+    newRow.querySelector('.line-total').value = '';
+    attachRowListeners(newRow);
+    tbody.appendChild(newRow);
+    if (unitPrice !== undefined) computeLineTotal(newRow);
+  }
+
+  function removeRow(btn) {
+    const tbody = document.getElementById('line-items-body');
+    if (tbody.querySelectorAll('.line-item-row').length > 1) {
+      btn.closest('.line-item-row').remove();
+      computeGrandTotal();
+    }
+  }
+
+  // Attach listeners to the initial row
+  document.querySelectorAll('.line-item-row').forEach(function(row) {
+    attachRowListeners(row);
+  });
+
+  // Preset select handler
+  var presetSelect = document.getElementById('preset-select');
+  if (presetSelect) {
+    presetSelect.addEventListener('change', function() {
+      var opt = this.options[this.selectedIndex];
+      if (opt.value) {
+        var desc = opt.dataset.description || '';
+        var price = parseFloat(opt.dataset.price) || 0;
+        addRow(desc, price);
+        this.selectedIndex = 0;
+      }
+    });
+  }
+</script>
+{% endblock %}
