@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Clients{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+  <h1>Clients</h1>
+  <a href="/clients/new" role="button">+ New Client</a>
+</div>
+
+{% if clients %}
+<figure>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Contact</th>
+        <th>Email</th>
+        <th>City</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for client in clients %}
+      <tr>
+        <td><strong>{{ client.name }}</strong></td>
+        <td>{{ client.contact_name or '&mdash;' }}</td>
+        <td>{{ client.email or '&mdash;' }}</td>
+        <td>{{ client.city or '&mdash;' }}</td>
+        <td style="white-space: nowrap;">
+          <a href="/clients/{{ client.id }}/edit">Edit</a>
+          &nbsp;|&nbsp;
+          <form method="post" action="/clients/{{ client.id }}/archive" style="display: inline; margin: 0;">
+            <button type="submit" class="secondary outline" style="padding: 0.1rem 0.5rem; font-size: 0.85rem; margin: 0;"
+              onclick="return confirm('Archive {{ client.name }}?')">Archive</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</figure>
+{% else %}
+<p>No clients yet. <a href="/clients/new">Add your first client</a> to get started.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{% if preset %}Edit Preset{% else %}New Preset{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if preset %}Edit Preset{% else %}New Preset{% endif %}</h1>
+
+<form method="post" action="{{ action_url }}">
+  <label>
+    Description <span style="color: red;">*</span>
+    <input type="text" name="description" value="{{ preset.description if preset else '' }}" required placeholder="e.g. Web design, Consulting (hourly)...">
+  </label>
+
+  <label>
+    Unit Price <span style="color: red;">*</span>
+    <input type="number" name="unit_price" step="0.01" min="0" value="{{ '%.2f' % preset.unit_price if preset else '' }}" required placeholder="0.00">
+  </label>
+
+  <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+    <button type="submit">{% if preset %}Save Changes{% else %}Create Preset{% endif %}</button>
+    <a href="/services" role="button" class="secondary outline">Cancel</a>
+  </div>
+</form>
+{% endblock %}

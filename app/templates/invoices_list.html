@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Invoices{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+  <h1>Invoices</h1>
+  <a href="/invoices/new" role="button">+ New Invoice</a>
+</div>
+
+<form method="get" action="/invoices" style="display: flex; gap: 1rem; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap;">
+  <label style="margin: 0;">
+    Year
+    <select name="year" style="width: auto;">
+      <option value="">All Years</option>
+      {% set current_year = year_filter | int if year_filter else 2026 %}
+      {% for y in range(current_year, current_year - 4, -1) %}
+      <option value="{{ y }}" {% if year_filter and year_filter | int == y %}selected{% endif %}>{{ y }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label style="margin: 0;">
+    Client
+    <select name="client_id" style="width: auto;">
+      <option value="">All Clients</option>
+      {% for client in clients %}
+      <option value="{{ client.id }}" {% if client_filter and client_filter | int == client.id %}selected{% endif %}>{{ client.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <button type="submit" style="margin: 0;">Filter</button>
+  {% if year_filter or client_filter %}
+  <a href="/invoices" role="button" class="secondary outline" style="margin: 0;">Clear</a>
+  {% endif %}
+</form>
+
+{% if invoices %}
+<figure>
+  <table>
+    <thead>
+      <tr>
+        <th>Number</th>
+        <th>Client</th>
+        <th>Issue Date</th>
+        <th>Due Date</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for invoice in invoices %}
+      <tr>
+        <td><a href="/invoices/{{ invoice.id }}">{{ invoice.number }}</a></td>
+        <td>
+          {% if invoice.client %}
+            {{ invoice.client.name }}
+          {% else %}
+            &mdash;
+          {% endif %}
+        </td>
+        <td>{{ invoice.issue_date }}</td>
+        <td>{{ invoice.due_date }}</td>
+        <td>{{ invoice.currency }} {{ "%.2f" % invoice.total }}</td>
+        <td>
+          {% if invoice.paid_at %}
+            <span class="badge-paid">Paid ✓</span>
+          {% else %}
+            <span class="badge-unpaid">Unpaid</span>
+          {% endif %}
+        </td>
+        <td style="white-space: nowrap;">
+          <a href="/invoices/{{ invoice.id }}">View</a>
+          &nbsp;|&nbsp;
+          <a href="/invoices/{{ invoice.id }}/pdf">PDF</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</figure>
+{% else %}
+<p>No invoices found. {% if year_filter or client_filter %}Try adjusting your filters or {% endif %}<a href="/invoices/new">create a new invoice</a>.</p>
+{% endif %}
+{% endblock %}

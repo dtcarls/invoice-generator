@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice {{ invoice.number }}</title>
+  <style>
+    @page {
+      size: letter;
+      margin: 1in;
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-size: 9pt;
+        color: #666;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 11pt;
+      color: #222;
+      line-height: 1.5;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+      gap: 2rem;
+    }
+
+    .business-info {
+      flex: 1;
+    }
+
+    .business-logo {
+      max-height: 72px;
+      max-width: 200px;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .business-name {
+      font-size: 16pt;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+
+    .business-details {
+      font-size: 9pt;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .invoice-meta {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .invoice-label {
+      font-size: 28pt;
+      font-weight: bold;
+      color: #333;
+      letter-spacing: 2px;
+      line-height: 1;
+      margin-bottom: 0.75rem;
+    }
+
+    .invoice-meta table {
+      margin-left: auto;
+      border-collapse: collapse;
+    }
+
+    .invoice-meta td {
+      padding: 2px 0 2px 1rem;
+      font-size: 10pt;
+    }
+
+    .invoice-meta td:first-child {
+      color: #666;
+      text-align: right;
+    }
+
+    .invoice-meta td:last-child {
+      font-weight: bold;
+      text-align: right;
+    }
+
+    .divider {
+      border: none;
+      border-top: 2px solid #333;
+      margin: 1.5rem 0;
+    }
+
+    .bill-to {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-label {
+      font-size: 8pt;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      margin-bottom: 0.25rem;
+    }
+
+    .bill-to-name {
+      font-size: 12pt;
+      font-weight: bold;
+    }
+
+    .bill-to-details {
+      font-size: 10pt;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    table.items {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+      font-size: 10pt;
+    }
+
+    table.items thead tr {
+      background-color: #333;
+      color: #fff;
+    }
+
+    table.items thead th {
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      font-weight: normal;
+      font-size: 9pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    table.items thead th.num {
+      text-align: right;
+    }
+
+    table.items tbody tr {
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    table.items tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    table.items tbody td {
+      padding: 0.5rem 0.75rem;
+      vertical-align: top;
+    }
+
+    table.items tbody td.num {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .total-row {
+      border-top: 2px solid #333;
+      margin-top: 0.25rem;
+    }
+
+    .total-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+
+    .total-table td {
+      padding: 0.4rem 0.75rem;
+    }
+
+    .total-table .total-label {
+      text-align: right;
+      color: #555;
+      font-size: 10pt;
+    }
+
+    .total-table .total-value {
+      text-align: right;
+      width: 120px;
+      font-size: 10pt;
+    }
+
+    .total-table .grand-total td {
+      font-size: 13pt;
+      font-weight: bold;
+      border-top: 2px solid #333;
+      padding-top: 0.5rem;
+    }
+
+    .payment-instructions {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f5f5f5;
+      border-left: 3px solid #333;
+      font-size: 10pt;
+      line-height: 1.6;
+    }
+
+    .payment-instructions .section-label {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-notes {
+      margin-top: 1.5rem;
+      font-size: 9pt;
+      color: #666;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="business-info">
+      {% if business.get('logo_path') %}
+      <img src="file:///data/logos/{{ business.logo_path }}" alt="{{ business.get('business_name', '') }} logo" class="business-logo">
+      {% endif %}
+      <div class="business-name">{{ business.get('business_name', '') }}</div>
+      <div class="business-details">
+        {% if business.get('address_line1') %}{{ business.address_line1 }}<br>{% endif %}
+        {% if business.get('address_line2') %}{{ business.address_line2 }}<br>{% endif %}
+        {% if business.get('city') or business.get('region') or business.get('postal_code') %}
+          {{ business.get('city', '') }}{% if business.get('region') %}, {{ business.region }}{% endif %} {{ business.get('postal_code', '') }}<br>
+        {% endif %}
+        {% if business.get('country') %}{{ business.country }}<br>{% endif %}
+        {% if business.get('email') %}{{ business.email }}<br>{% endif %}
+        {% if business.get('phone') %}{{ business.phone }}<br>{% endif %}
+        {% if business.get('website') %}{{ business.website }}<br>{% endif %}
+        {% if business.get('tax_id') %}Tax ID: {{ business.tax_id }}{% endif %}
+      </div>
+    </div>
+
+    <div class="invoice-meta">
+      <div class="invoice-label">INVOICE</div>
+      <table>
+        <tr>
+          <td>Invoice #</td>
+          <td>{{ invoice.number }}</td>
+        </tr>
+        <tr>
+          <td>Issue Date</td>
+          <td>{{ invoice.issue_date }}</td>
+        </tr>
+        <tr>
+          <td>Due Date</td>
+          <td>{{ invoice.due_date }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="bill-to">
+    <div class="section-label">Bill To</div>
+    <div class="bill-to-name">{{ client.get('name', '') }}</div>
+    <div class="bill-to-details">
+      {% if client.get('contact_name') %}{{ client.contact_name }}<br>{% endif %}
+      {% if client.get('address_line1') %}{{ client.address_line1 }}<br>{% endif %}
+      {% if client.get('address_line2') %}{{ client.address_line2 }}<br>{% endif %}
+      {% if client.get('city') or client.get('region') or client.get('postal_code') %}
+        {{ client.get('city', '') }}{% if client.get('region') %}, {{ client.region }}{% endif %} {{ client.get('postal_code', '') }}<br>
+      {% endif %}
+      {% if client.get('country') %}{{ client.country }}<br>{% endif %}
+      {% if client.get('email') %}{{ client.email }}{% endif %}
+    </div>
+  </div>
+
+  <table class="items">
+    <thead>
+      <tr>
+        <th style="width: 50%;">Description</th>
+        <th class="num" style="width: 15%;">Qty</th>
+        <th class="num" style="width: 17.5%;">Unit Price</th>
+        <th class="num" style="width: 17.5%;">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.description }}</td>
+        <td class="num">{{ "%.2f" % item.quantity }}</td>
+        <td class="num">{{ invoice.currency }} {{ "%.2f" % item.unit_price }}</td>
+        <td class="num">{{ invoice.currency }} {{ "%.2f" % item.line_total }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <table class="total-table">
+    <tr class="grand-total">
+      <td class="total-label">Total Due</td>
+      <td class="total-value">{{ invoice.currency }} {{ "%.2f" % invoice.total }}</td>
+    </tr>
+  </table>
+
+  {% set pay_instructions = invoice.payment_instructions or business.get('payment_instructions', '') %}
+  {% if pay_instructions %}
+  <div class="payment-instructions">
+    <div class="section-label">Payment Instructions</div>
+    {{ pay_instructions }}
+  </div>
+  {% endif %}
+
+  {% if invoice.notes %}
+  <div class="footer-notes">{{ invoice.notes }}</div>
+  {% endif %}
+
+</body>
+</html>

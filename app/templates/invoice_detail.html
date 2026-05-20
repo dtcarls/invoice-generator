@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Invoice {{ invoice.number }}{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+  <h1 style="margin: 0;">{{ invoice.number }}</h1>
+  {% if invoice.paid_at %}
+    <span class="badge-paid" style="font-size: 1.1rem;">Paid ✓</span>
+  {% else %}
+    <span class="badge-unpaid" style="font-size: 1.1rem;">Unpaid</span>
+  {% endif %}
+</div>
+
+<div class="grid" style="margin-bottom: 1.5rem;">
+  <div>
+    <h3>Invoice Details</h3>
+    <table style="border: none;">
+      <tbody>
+        <tr>
+          <th style="text-align: left; padding-left: 0;">Issue Date</th>
+          <td>{{ invoice.issue_date }}</td>
+        </tr>
+        <tr>
+          <th style="text-align: left; padding-left: 0;">Due Date</th>
+          <td>{{ invoice.due_date }}</td>
+        </tr>
+        <tr>
+          <th style="text-align: left; padding-left: 0;">Currency</th>
+          <td>{{ invoice.currency }}</td>
+        </tr>
+        <tr>
+          <th style="text-align: left; padding-left: 0;">Total</th>
+          <td><strong>{{ invoice.currency }} {{ "%.2f" % invoice.total }}</strong></td>
+        </tr>
+        <tr>
+          <th style="text-align: left; padding-left: 0;">Status</th>
+          <td>
+            {% if invoice.paid_at %}
+              <span class="badge-paid">Paid ✓</span>
+            {% else %}
+              <span class="badge-unpaid">Unpaid</span>
+            {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <h3>Bill To</h3>
+    {% if client_snapshot %}
+      <p style="margin: 0;">
+        <strong>{{ client_snapshot.get('name', '') }}</strong><br>
+        {% if client_snapshot.get('contact_name') %}{{ client_snapshot['contact_name'] }}<br>{% endif %}
+        {% if client_snapshot.get('address_line1') %}{{ client_snapshot['address_line1'] }}<br>{% endif %}
+        {% if client_snapshot.get('address_line2') %}{{ client_snapshot['address_line2'] }}<br>{% endif %}
+        {% if client_snapshot.get('city') or client_snapshot.get('region') or client_snapshot.get('postal_code') %}
+          {{ client_snapshot.get('city', '') }}{% if client_snapshot.get('region') %}, {{ client_snapshot['region'] }}{% endif %} {{ client_snapshot.get('postal_code', '') }}<br>
+        {% endif %}
+        {% if client_snapshot.get('country') %}{{ client_snapshot['country'] }}<br>{% endif %}
+        {% if client_snapshot.get('email') %}{{ client_snapshot['email'] }}{% endif %}
+      </p>
+    {% else %}
+      <p>No client information available.</p>
+    {% endif %}
+  </div>
+</div>
+
+<h3>Line Items</h3>
+<figure>
+  <table>
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th style="text-align: right;">Qty</th>
+        <th style="text-align: right;">Unit Price</th>
+        <th style="text-align: right;">Line Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.description }}</td>
+        <td style="text-align: right;">{{ "%.2f" % item.quantity }}</td>
+        <td style="text-align: right;">{{ "%.2f" % item.unit_price }}</td>
+        <td style="text-align: right;">{{ "%.2f" % item.line_total }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
+        <td style="text-align: right;"><strong>{{ invoice.currency }} {{ "%.2f" % invoice.total }}</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+</figure>
+
+{% if invoice.notes %}
+<h3>Notes</h3>
+<p>{{ invoice.notes }}</p>
+{% endif %}
+
+{% set pay_instructions = invoice.payment_instructions or business_snapshot.get('payment_instructions', '') %}
+{% if pay_instructions %}
+<h3>Payment Instructions</h3>
+<p style="white-space: pre-line;">{{ pay_instructions }}</p>
+{% endif %}
+
+{% if invoice.paid_at %}
+<h3>Payment Information</h3>
+<table style="border: none; max-width: 400px;">
+  <tbody>
+    <tr>
+      <th style="text-align: left; padding-left: 0;">Paid Date</th>
+      <td>{{ invoice.paid_at }}</td>
+    </tr>
+    {% if invoice.payment_method %}
+    <tr>
+      <th style="text-align: left; padding-left: 0;">Payment Method</th>
+      <td>{{ invoice.payment_method }}</td>
+    </tr>
+    {% endif %}
+    {% if invoice.receipt_number %}
+    <tr>
+      <th style="text-align: left; padding-left: 0;">Receipt Number</th>
+      <td>{{ invoice.receipt_number }}</td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+{% endif %}
+
+<hr>
+
+<div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-top: 1rem;">
+  <a href="/invoices/{{ invoice.id }}/pdf" role="button" class="outline">Download Invoice PDF</a>
+
+  {% if invoice.paid_at %}
+    <a href="/invoices/{{ invoice.id }}/receipt.pdf" role="button" class="outline">Download Receipt PDF</a>
+    <form method="post" action="/invoices/{{ invoice.id }}/mark-unpaid" style="margin: 0;">
+      <button type="submit" class="secondary outline">Mark Unpaid</button>
+    </form>
+  {% else %}
+    <details style="border: 1px solid var(--pico-muted-border-color); border-radius: var(--pico-border-radius); padding: 0.5rem 1rem;">
+      <summary style="cursor: pointer;"><strong>Mark as Paid</strong></summary>
+      <form method="post" action="/invoices/{{ invoice.id }}/mark-paid" style="margin-top: 1rem;">
+        <div class="grid">
+          <label>
+            Paid Date
+            <input type="date" name="paid_at" required>
+          </label>
+          <label>
+            Payment Method
+            <input type="text" name="payment_method" placeholder="e.g. Bank transfer, PayPal...">
+          </label>
+        </div>
+        <button type="submit">Confirm Payment</button>
+      </form>
+    </details>
+  {% endif %}
+
+  <a href="/invoices" class="secondary">← Back to Invoices</a>
+</div>
+{% endblock %}
