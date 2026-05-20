@@ -1,0 +1,59 @@
+/* Invoice Generator — custom overrides on top of Pico.css v2 */
+
+/* Status badges */
+.badge-paid {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.badge-unpaid {
+  color: #888;
+}
+
+/* Invoice form line items table — ensure inputs fill cells */
+.line-items td input {
+  width: 100%;
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+}
+
+.line-items td {
+  vertical-align: middle;
+  padding: 0.4rem 0.5rem;
+}
+
+/* Read-only line total inputs */
+.line-items .line-total {
+  background: var(--pico-form-element-disabled-background-color, #f5f5f5);
+  color: var(--pico-muted-color, #555);
+  cursor: default;
+}
+
+/* Tighten up form grids on smaller content */
+.grid > label {
+  margin-bottom: 0.5rem;
+}
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--pico-muted-border-color);
+  color: var(--pico-muted-color);
+  text-align: center;
+}
+
+/* Prevent table overflow */
+figure {
+  overflow-x: auto;
+}
+
+table {
+  min-width: 100%;
+}
+
+/* Remove button style in line items */
+.remove-row {
+  color: var(--pico-del-color, #c00);
+  border-color: var(--pico-del-color, #c00);
+}

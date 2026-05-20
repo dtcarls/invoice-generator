@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Service Presets{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+  <h1>Service Presets</h1>
+  <a href="/services/new" role="button">+ New Preset</a>
+</div>
+
+{% if presets %}
+<figure>
+  <table>
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th style="text-align: right;">Unit Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for preset in presets %}
+      <tr>
+        <td>{{ preset.description }}</td>
+        <td style="text-align: right;">{{ "%.2f" % preset.unit_price }}</td>
+        <td style="white-space: nowrap;">
+          <a href="/services/{{ preset.id }}/edit">Edit</a>
+          &nbsp;|&nbsp;
+          <form method="post" action="/services/{{ preset.id }}/archive" style="display: inline; margin: 0;">
+            <button type="submit" class="secondary outline" style="padding: 0.1rem 0.5rem; font-size: 0.85rem; margin: 0;"
+              onclick="return confirm('Archive this preset?')">Archive</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</figure>
+{% else %}
+<p>No service presets yet. <a href="/services/new">Create a preset</a> to quickly add line items when invoicing.</p>
+{% endif %}
+{% endblock %}

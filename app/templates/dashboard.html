@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+  <h1>Dashboard</h1>
+  <a href="/invoices/new" role="button">+ New Invoice</a>
+</div>
+
+<h2>Recent Invoices</h2>
+
+{% if recent_invoices %}
+<figure>
+  <table>
+    <thead>
+      <tr>
+        <th>Number</th>
+        <th>Client</th>
+        <th>Date</th>
+        <th>Due Date</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for invoice in recent_invoices %}
+      {% set client_info = invoice.client_snapshot_json | tojson if invoice.client_snapshot_json is string else invoice.client_snapshot_json %}
+      <tr>
+        <td><a href="/invoices/{{ invoice.id }}">{{ invoice.number }}</a></td>
+        <td>
+          {% if invoice.client %}
+            {{ invoice.client.name }}
+          {% else %}
+            &mdash;
+          {% endif %}
+        </td>
+        <td>{{ invoice.issue_date }}</td>
+        <td>{{ invoice.due_date }}</td>
+        <td>{{ invoice.currency }} {{ "%.2f" % invoice.total_amount }}</td>
+        <td>
+          {% if invoice.paid_at %}
+            <span class="badge-paid">Paid ✓</span>
+          {% else %}
+            <span class="badge-unpaid">Unpaid</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="/invoices/{{ invoice.id }}">View</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</figure>
+{% else %}
+<p>No invoices yet. <a href="/invoices/new">Create your first invoice</a> to get started.</p>
+{% endif %}
+{% endblock %}

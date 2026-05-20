@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{% if client %}Edit {{ client.name }}{% else %}New Client{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if client %}Edit {{ client.name }}{% else %}New Client{% endif %}</h1>
+
+<form method="post" action="{{ action_url }}">
+  <div class="grid">
+    <label>
+      Name <span style="color: red;">*</span>
+      <input type="text" name="name" value="{{ client.name if client else '' }}" required placeholder="Client or company name">
+    </label>
+    <label>
+      Contact Name
+      <input type="text" name="contact_name" value="{{ client.contact_name if client else '' }}" placeholder="Primary contact person">
+    </label>
+  </div>
+
+  <div class="grid">
+    <label>
+      Email
+      <input type="email" name="email" value="{{ client.email if client else '' }}" placeholder="billing@example.com">
+    </label>
+    <label>
+      &nbsp;
+    </label>
+  </div>
+
+  <label>
+    Address Line 1
+    <input type="text" name="address_line1" value="{{ client.address_line1 if client else '' }}" placeholder="Street address">
+  </label>
+
+  <label>
+    Address Line 2
+    <input type="text" name="address_line2" value="{{ client.address_line2 if client else '' }}" placeholder="Suite, unit, floor...">
+  </label>
+
+  <div class="grid">
+    <label>
+      City
+      <input type="text" name="city" value="{{ client.city if client else '' }}">
+    </label>
+    <label>
+      State / Region
+      <input type="text" name="region" value="{{ client.region if client else '' }}">
+    </label>
+    <label>
+      Postal Code
+      <input type="text" name="postal_code" value="{{ client.postal_code if client else '' }}">
+    </label>
+  </div>
+
+  <div class="grid">
+    <label>
+      Country
+      <input type="text" name="country" value="{{ client.country if client else '' }}">
+    </label>
+    <label>
+      &nbsp;
+    </label>
+  </div>
+
+  <label>
+    Notes
+    <textarea name="notes" rows="3" placeholder="Internal notes about this client">{{ client.notes if client else '' }}</textarea>
+  </label>
+
+  <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+    <button type="submit">{% if client %}Save Changes{% else %}Create Client{% endif %}</button>
+    <a href="/clients" role="button" class="secondary outline">Cancel</a>
+  </div>
+</form>
+{% endblock %}
