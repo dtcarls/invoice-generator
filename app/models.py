@@ -1,6 +1,7 @@
 from sqlalchemy import (
     Column, Integer, Text, Numeric, Date, DateTime, ForeignKey, func
 )
+from sqlalchemy.orm import relationship
 from app.db import Base
 
 
@@ -61,6 +62,7 @@ class Invoice(Base):
     issue_date = Column(Date, nullable=False)
     due_date = Column(Date, nullable=False)
     client_id = Column(Integer, ForeignKey("clients.id"))
+    client = relationship("Client", foreign_keys=[client_id], lazy="select")
     client_snapshot_json = Column(Text)
     business_snapshot_json = Column(Text)
     currency = Column(Text, nullable=False, default="USD")

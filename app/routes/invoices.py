@@ -81,8 +81,8 @@ def invoices_list(
             "request": request,
             "invoices": invoices,
             "clients": clients,
-            "filter_year": year,
-            "filter_client_id": client_id,
+            "year_filter": year,
+            "client_filter": client_id,
         },
     )
 
@@ -192,10 +192,17 @@ def invoice_detail(invoice_id: int, request: Request, db: Session = Depends(get_
         .order_by(InvoiceItem.position)
         .all()
     )
-    client = db.query(Client).filter(Client.id == invoice.client_id).first()
+    client_snapshot = json.loads(invoice.client_snapshot_json) if invoice.client_snapshot_json else {}
+    business_snapshot = json.loads(invoice.business_snapshot_json) if invoice.business_snapshot_json else {}
     return templates.TemplateResponse(
         "invoice_detail.html",
-        {"request": request, "invoice": invoice, "items": items, "client": client},
+        {
+            "request": request,
+            "invoice": invoice,
+            "items": items,
+            "client_snapshot": client_snapshot,
+            "business_snapshot": business_snapshot,
+        },
     )
 
 

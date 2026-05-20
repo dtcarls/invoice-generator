@@ -26,7 +26,6 @@
     </thead>
     <tbody>
       {% for invoice in recent_invoices %}
-      {% set client_info = invoice.client_snapshot_json | tojson if invoice.client_snapshot_json is string else invoice.client_snapshot_json %}
       <tr>
         <td><a href="/invoices/{{ invoice.id }}">{{ invoice.number }}</a></td>
         <td>
@@ -38,7 +37,7 @@
         </td>
         <td>{{ invoice.issue_date }}</td>
         <td>{{ invoice.due_date }}</td>
-        <td>{{ invoice.currency }} {{ "%.2f" % invoice.total_amount }}</td>
+        <td>{{ invoice.currency }} {{ "%.2f" % invoice.total }}</td>
         <td>
           {% if invoice.paid_at %}
             <span class="badge-paid">Paid ✓</span>

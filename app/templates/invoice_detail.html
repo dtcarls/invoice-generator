@@ -31,7 +31,7 @@
         </tr>
         <tr>
           <th style="text-align: left; padding-left: 0;">Total</th>
-          <td><strong>{{ invoice.currency }} {{ "%.2f" % invoice.total_amount }}</strong></td>
+          <td><strong>{{ invoice.currency }} {{ "%.2f" % invoice.total }}</strong></td>
         </tr>
         <tr>
           <th style="text-align: left; padding-left: 0;">Status</th>
@@ -90,7 +90,7 @@
     <tfoot>
       <tr>
         <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
-        <td style="text-align: right;"><strong>{{ invoice.currency }} {{ "%.2f" % invoice.total_amount }}</strong></td>
+        <td style="text-align: right;"><strong>{{ invoice.currency }} {{ "%.2f" % invoice.total }}</strong></td>
       </tr>
     </tfoot>
   </table>

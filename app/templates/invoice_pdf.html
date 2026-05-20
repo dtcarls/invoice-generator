@@ -225,9 +225,9 @@
   <div class="header">
     <div class="business-info">
       {% if business.get('logo_path') %}
-      <img src="file:///data/logos/{{ business.logo_path }}" alt="{{ business.get('name', '') }} logo" class="business-logo">
+      <img src="file:///data/logos/{{ business.logo_path }}" alt="{{ business.get('business_name', '') }} logo" class="business-logo">
       {% endif %}
-      <div class="business-name">{{ business.get('name', '') }}</div>
+      <div class="business-name">{{ business.get('business_name', '') }}</div>
       <div class="business-details">
         {% if business.get('address_line1') %}{{ business.address_line1 }}<br>{% endif %}
         {% if business.get('address_line2') %}{{ business.address_line2 }}<br>{% endif %}
@@ -302,7 +302,7 @@
   <table class="total-table">
     <tr class="grand-total">
       <td class="total-label">Total Due</td>
-      <td class="total-value">{{ invoice.currency }} {{ "%.2f" % invoice.total_amount }}</td>
+      <td class="total-value">{{ invoice.currency }} {{ "%.2f" % invoice.total }}</td>
     </tr>
   </table>
 
